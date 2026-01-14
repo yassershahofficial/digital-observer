@@ -15,8 +15,15 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Ensure public directory exists (create empty if missing)
+RUN mkdir -p public
+
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED 1
+
+# Accept build arguments for MongoDB URI (optional during build)
+ARG MONGODB_URI
+ENV MONGODB_URI=${MONGODB_URI:-mongodb://localhost:27017/portfolio}
 
 # Build the application
 RUN npm run build
